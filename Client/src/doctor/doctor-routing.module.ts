@@ -8,17 +8,17 @@ import { ViewRecordComponent } from './view-record/view-record.component';
 const routes: Routes = [
   {
     path: '',
-    component: DoctorDashboardComponent,
-    children: [
-      { path: 'doctor-dashboard', component: DashboardHomeComponent },
-      { path: 'consult', component: ConsultationComponent },
-      {path:'view-record',component:ViewRecordComponent}
-    ],
+    redirectTo: 'doctor-dashboard',
+    pathMatch: 'full',
   },
   {
     path: '',
     component: DoctorDashboardComponent,
-    redirectTo: 'doctor/consult',
+    children: [
+      { path: 'doctor-dashboard', component: DashboardHomeComponent },
+      { path: 'consult', component: ConsultationComponent },
+      { path: 'view-record', component: ViewRecordComponent }
+    ],
   },
 ];
 

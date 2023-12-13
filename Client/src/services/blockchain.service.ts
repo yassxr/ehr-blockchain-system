@@ -4,6 +4,11 @@ import { rejects } from 'assert';
 import { resolve } from 'dns';
 import Web3 from 'web3';
 import { IpfsService } from './ipfs.service';
+const pinataSDK = require('@pinata/sdk');
+const pinata = new pinataSDK({ 
+  pinataJWTKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI4MTlkNGNmYy02ZWMwLTQ3ZjctYjFlMy1jYzVjZWVkNTU2YmIiLCJlbWFpbCI6InpodW1hemhhbm92YXNhbHRhbmF0MkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiZWY5OWRiYWM3NTJlOThlN2Y2NDUiLCJzY29wZWRLZXlTZWNyZXQiOiI0MWI1ZDMxZTg4ZDQzNTI4OTYxMWQ3YTQ2ZjEzZmM3MmFmMzg4MzViZmU1OWJhMzIzOTcyODBiYzgxODU2MjA5IiwiaWF0IjoxNzAyNDU2NTc0fQ.2aKo848h27Xc46xAapBn0J72vj4o0EcePjql9RBfI_c',
+  pinataSecretKey: '41b5d31e88d435289611d7a46f13fc72af38835bfe59ba32397280bc81856209' });
+
 
 const Contract = require('../../build/contracts/Contract.json');
 
@@ -142,28 +147,34 @@ export class BlockchainService {
   async addPatient(pat_id: any, data: any): Promise<any> {
     console.log('adding Patient');
     return new Promise((resolve, reject) => {
-      this.ipfs.addJSON(data).then((IPFSHash: any) => {
+      // Use Pinata SDK to pin the JSON data to IPFS
+      pinata.pinJSONToIPFS(data).then((result: any) => {
+        const IPFSHash = result.IpfsHash;
         console.log('IPFS hash : ', IPFSHash);
+  
+        // Call the contract method to add patient info with the Pinata IPFS hash
         this.contract.methods
           .addPatInfo(pat_id, IPFSHash)
           .send({ from: this.account })
-          .on('confirmation', (result: any) => {
-            console.log('result', result);
-            if (result) {
-              this.http
-                .post('http://localhost:8000/api/patient/', {
-                  patID: pat_id,
-                  patName: data.fName + ' ' + data.lName,
-                })
-                .subscribe((patient) => {
-                  resolve(patient);
-                });
-            }
+          .on('confirmation', (confirmationNumber: any, receipt: any) => {
+            console.log('Confirmation Number:', confirmationNumber);
+            console.log('Receipt:', receipt);
+  
+            // Once the transaction is confirmed, update your local server with patient information
+            this.http.post('http://localhost:8000/api/patient/', {
+              patID: pat_id,
+              patName: data.fName + ' ' + data.lName,
+            }).subscribe((patient) => {
+              resolve(patient);
+            });
           })
           .catch((err: any) => {
             console.log('error', err);
             reject(err);
           });
+      }).catch((pinataError: any) => {
+        console.log('Pinata Error', pinataError);
+        reject(pinataError);
       });
     });
   }

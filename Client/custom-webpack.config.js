@@ -3,7 +3,9 @@ module.exports = {
       fallback: {
         "fs": false,
         "tty": require.resolve("tty-browserify"),
-        "zlib": require.resolve("browserify-zlib")
+        "zlib": require.resolve("browserify-zlib"),
+        "buffer": require.resolve("buffer/"),
+        "url": require.resolve("url/")
       },
     },
   };

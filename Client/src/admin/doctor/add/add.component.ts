@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { rejects } from 'assert';
 import { FILE, resolve } from 'dns';
 
-import { NgxImageCompressService } from 'ngx-image-compress';
+import { NgxImageCompressService, DOC_ORIENTATION } from 'ngx-image-compress';
 import { DoctorService } from 'src/admin/services/doctor.service';
 
 import { specialities } from 'src/utils/Doctor_Specialities';
@@ -96,7 +96,7 @@ export class AddComponent implements OnInit {
 
   compressImage() {
     this.imageCompress
-      .compressFile(this.image_url, 50, 50)
+      .compressFile(this.image_url, DOC_ORIENTATION.Up, 50)
       .then((compressedImage) => {
         console.log(compressedImage);
 

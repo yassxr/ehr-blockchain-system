@@ -51,78 +51,79 @@ export class PatientServiceService {
   }
 
   //get Patient Details
-  async getPatientDetails(): Promise<any> {
-    let id = this.account;
+async getPatientDetails(): Promise<any> {
+  let id = this.account;
 
-    return new Promise((resolve, reject) => {
-      this.blockchainService
-        .getAccount()
-        .then((acc: any) => {
-          id = acc;
-          this.blockchainService
-            .getContract()
-            .then((r: any) => {
-              this.contract = r;
-              this.contract.methods
-                .getPatInfo(id)
-                .call()
-                .then((result: any) => {
-                  console.log(result);
-                  this.http
-                    .get('https://ipfs.infura.io/ipfs/' + result)
-                    .subscribe((data:any) => {
-                      console.log(data);
-                      resolve(data);
-                    });
-                })
-                .catch((err: any) => {
-                  console.log(err);
-                  reject(err);
-                });
-            })
-            .catch((err: any) => {
-              reject(err);
-            });
-        })
-        .catch((err: any) => {
-          console.log(err);
-        });
-    });
-  }
-
-  //get patientRecords
-  async getPatientRecords(): Promise<any> {
-    let id = this.account;
-    return new Promise((resolve, reject) => {
-      this.blockchainService.getAccount().then((acc: any) => {
-        this.account = acc;
-        id = this.account;
-        this.blockchainService.getContract().then((r: any) => {
-          this.contract = r;
-          this.contract.methods
-            .viewMedRec(id)
-            .call()
-            .then((result: any) => {
-              console.log(result);
-              if (result.length >= 1) {
+  return new Promise((resolve, reject) => {
+    this.blockchainService
+      .getAccount()
+      .then((acc: any) => {
+        id = acc;
+        this.blockchainService
+          .getContract()
+          .then((r: any) => {
+            this.contract = r;
+            this.contract.methods
+              .getPatInfo(id)
+              .call()
+              .then((result: any) => {
+                console.log(result);
                 this.http
-                .get('https://ipfs.infura.io/ipfs/' + result)
-                .subscribe((data:any) => {
+                  .get('https://beige-electric-wildcat-9.mypinata.cloud/ipfs/' + result)
+                  .subscribe((data: any) => {
+                    console.log(data);
+                    resolve(data);
+                  });
+              })
+              .catch((err: any) => {
+                console.log(err);
+                reject(err);
+              });
+          })
+          .catch((err: any) => {
+            reject(err);
+          });
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  });
+}
+
+//get patientRecords
+async getPatientRecords(): Promise<any> {
+  let id = this.account;
+  return new Promise((resolve, reject) => {
+    this.blockchainService.getAccount().then((acc: any) => {
+      this.account = acc;
+      id = this.account;
+      this.blockchainService.getContract().then((r: any) => {
+        this.contract = r;
+        this.contract.methods
+          .viewMedRec(id)
+          .call()
+          .then((result: any) => {
+            console.log(result);
+            if (result.length >= 1) {
+              this.http
+                .get('https://beige-electric-wildcat-9.mypinata.cloud/ipfs/' + result)
+                .subscribe((data: any) => {
                   console.log(data);
                   resolve(data);
                 });
-              } else {
-                resolve(null);
-              }
-            })
-            .catch((err: any) => {
-              console.log(err);
-              reject(err);
-            });
-        });
+            } else {
+              resolve(null);
+            }
+          })
+          .catch((err: any) => {
+            console.log(err);
+            reject(err);
+          });
       });
     });
-  }
+  });
+}
+
 
   //Get Appointments
   async getPatAppointments(): Promise<any> {

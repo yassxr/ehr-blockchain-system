@@ -5,6 +5,10 @@ import { resolve } from "dns";
 import { Observable } from "rxjs";
 import { BlockchainService } from "src/services/blockchain.service";
 import { IpfsService } from "src/services/ipfs.service";
+const pinataSDK = require('@pinata/sdk');
+const pinata = new pinataSDK({ 
+  pinataJWTKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI4MTlkNGNmYy02ZWMwLTQ3ZjctYjFlMy1jYzVjZWVkNTU2YmIiLCJlbWFpbCI6InpodW1hemhhbm92YXNhbHRhbmF0MkBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiZWY5OWRiYWM3NTJlOThlN2Y2NDUiLCJzY29wZWRLZXlTZWNyZXQiOiI0MWI1ZDMxZTg4ZDQzNTI4OTYxMWQ3YTQ2ZjEzZmM3MmFmMzg4MzViZmU1OWJhMzIzOTcyODBiYzgxODU2MjA5IiwiaWF0IjoxNzAyNDU2NTc0fQ.2aKo848h27Xc46xAapBn0J72vj4o0EcePjql9RBfI_c',
+  pinataSecretKey: '41b5d31e88d435289611d7a46f13fc72af38835bfe59ba32397280bc81856209' });
 
 @Injectable({
   providedIn: "root",
@@ -91,7 +95,7 @@ export class DoctorService {
         .then((result: any) => {
           console.log(result);
           this.http
-            .get("https://ipfs.infura.io/ipfs/" + result)
+            .get('https://beige-electric-wildcat-9.mypinata.cloud/ipfs/' + result)
             .subscribe((data: any) => {
               console.log(data);
               resolve(data);
@@ -126,10 +130,10 @@ export class DoctorService {
           }
 
           console.log(PatientRecord);
-          this.ipfs
-            .addJSON(PatientRecord)
-            .then((IPFSHash: any) => {
-              console.log(IPFSHash);
+          pinata.pinJSONToIPFS(PatientRecord)
+            .then((result: any) => {
+              const IPFSHash = result.IpfsHash;
+              console.log('IPFS hash : ', IPFSHash);
               this.contract.methods
                 .addMedRecord(IPFSHash, this.patientId)
                 .send({ from: this.account })
@@ -171,10 +175,10 @@ export class DoctorService {
         PatientRecord = null;
       }
 
-      this.ipfs
-        .addJSON(PatientRecord)
-        .then((IPFSHash: any) => {
-          console.log(IPFSHash);
+      pinata.pinJSONToIPFS(PatientRecord)
+        .then((result: any) => {
+          const IPFSHash = result.IpfsHash;
+          console.log('IPFS hash : ', IPFSHash);
           this.contract.methods
             .addMedRecord(IPFSHash, this.patientId)
             .send({ from: this.account })
@@ -205,7 +209,7 @@ export class DoctorService {
             console.log(result);
             if (result.length >= 1) {
               this.http
-                .get("https://ipfs.infura.io/ipfs/" + result)
+                .get('https://beige-electric-wildcat-9.mypinata.cloud/ipfs/' + result)
                 .subscribe((data: any) => {
                   console.log(data);
                   resolve(data);
