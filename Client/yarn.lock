@@ -142,6 +142,15 @@
   dependencies:
     tslib "^2.3.0"
 
+"@angular/cdk@^17.0.4":
+  version "17.0.4"
+  resolved "https://registry.npmjs.org/@angular/cdk/-/cdk-17.0.4.tgz"
+  integrity sha512-mh/EuIR0NPfpNqAXBSZWuJeBMXUvUDYdKhiFWZet5NLO1bDgFe1MGLBjtW4us95k4BZsMLbCKNxJgc+4JqwUvg==
+  dependencies:
+    tslib "^2.3.0"
+  optionalDependencies:
+    parse5 "^7.1.2"
+
 "@angular/cli@^17.0.7":
   version "17.0.7"
   resolved "https://registry.npmjs.org/@angular/cli/-/cli-17.0.7.tgz"
@@ -166,7 +175,7 @@
     symbol-observable "4.0.0"
     yargs "17.7.2"
 
-"@angular/common@^17.0.6", "@angular/common@>= 9", "@angular/common@17.0.6":
+"@angular/common@^17.0.0 || ^18.0.0", "@angular/common@^17.0.6", "@angular/common@>= 9", "@angular/common@17.0.6":
   version "17.0.6"
   resolved "https://registry.npmjs.org/@angular/common/-/common-17.0.6.tgz"
   integrity sha512-FZtf8ol8W2V21ZDgFtcxmJ6JJKUO97QZ+wr/bosyYEryWMmn6VGrbOARhfW7BlrEgn14NdFkLb72KKtqoqRjrg==
@@ -194,7 +203,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/core@^17.0.6", "@angular/core@>= 9", "@angular/core@17.0.6":
+"@angular/core@^17.0.0 || ^18.0.0", "@angular/core@^17.0.6", "@angular/core@>= 9", "@angular/core@17.0.6":
   version "17.0.6"
   resolved "https://registry.npmjs.org/@angular/core/-/core-17.0.6.tgz"
   integrity sha512-QzfKRTDNgGOY9D5VxenUUz20cvPVC+uVw9xiqkDuHgGfLYVFlCAK9ymFYkdUCLTcVzJPxckP+spMpPX8nc4Aqw==
@@ -9519,7 +9528,7 @@ parse5-sax-parser@^7.0.0:
   dependencies:
     parse5 "^7.0.0"
 
-parse5@^7.0.0:
+parse5@^7.0.0, parse5@^7.1.2:
   version "7.1.2"
   resolved "https://registry.npmjs.org/parse5/-/parse5-7.1.2.tgz"
   integrity sha512-Czj1WaSVpaoj0wbhMzLmWD69anp2WH7FXMB9n1Sy8/ZFF9jolSQVMu1Ij5WIyGmcBmhk7EOndpO4mIpihVqAXw==
